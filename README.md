@@ -6,5 +6,4 @@ A knockout binding to transform a configured list into an advanced accordion wit
 
 
 #Known Bugs:
-=============
 (10-23-2014): Due to percentages, occasionally there are gaps between panels generally 1px in height.
