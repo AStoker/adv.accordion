@@ -27,7 +27,6 @@ A function which will execute after the resizing (including any transition) is f
 ####beforeResize: function(transitionedElement)
 A function which will resize immediately before any transition takes into affect before a resize
 
-=======
 
 #Known Bugs:
 (10-23-2014): Due to percentages, occasionally there are gaps between panels generally 1px in height.
