@@ -4,6 +4,7 @@ adv.accordion
 A knockout binding to transform a configured list into an advanced accordion with weighted tabs.
 
 
+<<<<<<< HEAD
 #Options:
 ####headerHeight: (string)  
 A string which will define the height of the header. 
@@ -27,6 +28,8 @@ A function which will execute after the resizing (including any transition) is f
 ####beforeResize: function(transitionedElement)
 A function which will resize immediately before any transition takes into affect before a resize
 
+=======
+>>>>>>> 094f512c096ea9bc794b4cab283a8144e8b309d2
 
 #Known Bugs:
 (10-23-2014): Due to percentages, occasionally there are gaps between panels generally 1px in height.
