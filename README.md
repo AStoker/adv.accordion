@@ -37,7 +37,8 @@ A function which will resize immediately before any transition takes into affect
 
 #Future Improvements:
 1. When collapsing all panels (when default-tab is selected to be opened on collapse all), make the closing transition happen the same time the opening transition is happening for the default tab.  
-2. Better managing of state of tabs (Provide functions to toggle tabs for javascript use instead of relying on user click events)
+2. Better managing of state of tabs (Provide functions to toggle tabs for javascript use instead of relying on user click events).  
+3. More options for how to handle closing of all tabs
 
 #Untested Features:
 1. Dynamically adding panels.  
