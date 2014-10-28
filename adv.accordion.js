@@ -161,6 +161,22 @@ define(['jquery', 'knockout'], function($, ko) {
 
 	}
 	
+	function isTabLastToClose($accordion, $tabH){
+		var isTabClosing = $tabH.parent().height() !== $tabH.height(), //If tab is not the same size as header (and it was the one selected), then it is going to close
+			isLastTab = true;
+			
+		$accordion.children().each(function(i,x){
+			var $ah = $(x).children("[data-accordion='header']");
+		
+			if ($ah[0] !== $tabH[0] && $(x).height() !== $ah.height()) { //If the tab is not the one in question, and the tab is not hidden
+				isLastTab = false;
+			}
+		});
+		
+		return isLastTab && isTabClosing;
+		
+	}
+	
 	ko.bindingHandlers.advAccordion = {
 		init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
 			// This will be called when the binding is first applied to an element
@@ -168,7 +184,8 @@ define(['jquery', 'knockout'], function($, ko) {
 			vac = valueAccessor();
 								
 			var headerHeight = ko.unwrap(vac.headerHeight),
-				toggleZone = ko.unwrap(vac.toggleZone);
+				toggleZone = ko.unwrap(vac.toggleZone),
+				allowCloseAll = ko.unwrap(vac.allowCloseAll);
 			
 			//Register click events on headers to reveal content 
 			$(element).find("[data-accordion='header']").each(function(i, e) {
@@ -187,21 +204,47 @@ define(['jquery', 'knockout'], function($, ko) {
 					}
 				} //Else leave as default (header) 
 					
-				$toggleElement.on("click", function(ev) {					
-					calculateHeights($(element).children(), $(e)); //recalculate the heights
+				$toggleElement.on("click", function(ev) {		
+					if (!allowCloseAll && isTabLastToClose($(element), $(e))){ //Find the default tab and select that to be the only one open	
+						var $dth = $(element).children("[data-accordion='default-tab']").children("[data-accordion='header']"),
+							loopingTransTime = 0,
+							maxTransTime = 0, //Kinda hacky way of ensuring last step of transition doesn't take place until previous transitions finish
+							transitionCSS = "";
+							
+						if ($(e)[0] !== $dth[0]) {//If toggleElement (which is the trigger for the header) is not the default tab, then show default only	
+							//Hide all tabs (then calculate height for default tab). Note: transition will take effect for the closing tab, but won't do anything with currently closed tabs
+							
+							for (var p = 0; p < pfx.length; p++) {//loop through the possible prefixed transitions
+								transitionCSS = $(e).parent().css((pfx[p] ? "-"+pfx[p]+"-" : pfx[p]) + "transition");
+								if(transitionCSS){
+									loopingTransTime = parseFloat(transitionCSS.match(/((\d+)(\.))?(\d)+s/g)[0]); //getting first match because the first number should be the duration
+									if (loopingTransTime > maxTransTime) {
+										maxTransTime = loopingTransTime;
+									}
+								}								
+							}
+														
+							$(e).parent().height($(e).height());
+							setTimeout(function(){
+								calculateHeights($(element).children(), $dth); //recalculate the heights
+							}, maxTransTime * 1000 + 100);//+100 ms to help with buffer (minimize this potentially)
+							
+						} //else default tab is last open, and we won't close it		
+						
+					} else { //Default action
+						calculateHeights($(element).children(), $(e)); //recalculate the heights
+					}			
 				});			
 			});
 			
 			$(element).addClass("no-transition"); //Prevent initial transitions
-			$(element).children().each(function(i, e){ //Set initial heights
-			
+			$(element).children().each(function(i, e){ //Set initial heights and listeners for transition ends	
 						
 				PrefixedEvent(e, "TransitionEnd", function(transitionEvent){
 					if (vac.afterResizeComplete && typeof vac.afterResizeComplete === "function"){
 						vac.afterResizeComplete(transitionEvent, transitionEvent.currentTarget);
 					}
-				});
-			
+				});			
 			
 				$(e).data("accordionID", i);
 				$(e).height(headerHeight);
