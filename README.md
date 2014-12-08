@@ -3,6 +3,19 @@ adv.accordion
 
 A knockout binding to transform a configured list into an advanced accordion with weighted tabs.
 
+#Usage:
+	<ul data-bind="advAccordion: {options: options, foreach: panels}" class="adv-accordion">
+        <li data-weight="1">
+            <div data-accordion="header">
+                <span>Panel Header</span>
+            </div>
+
+            <div data-accordion="content">
+                <h4>Panel Content</h4>
+                <span>Smooth as an android's bottom, eh, Data?</span>
+            </div>
+        </li>
+	</ul>
 
 #Javascript Options:
 ####headerHeight: (string)  
@@ -33,6 +46,7 @@ A function which will resize immediately before any transition takes into affect
 #Known Bugs:
 (10-23-2014): Due to percentages, occasionally there are gaps between panels generally 1px in height.  
 (10-27-2014): Listening to CSS Transition property to prohibit certain effects from happening in incorrect order. However, not listening to individual css styles like transition-duration.  
+(10-29-2014): IE Transitions not working
 
 
 #Future Improvements:
