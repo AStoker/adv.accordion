@@ -10,6 +10,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 	    	allowCloseAll: undefined, //true/false
 	    	afterResizeComplete: undefined, //function
 	    	beforeResize: undefined, //function
+	    	panels: undefined,//array
 		},
 		vac = {};//valueAccessor
 
